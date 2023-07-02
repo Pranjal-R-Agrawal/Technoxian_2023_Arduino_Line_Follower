@@ -30,7 +30,7 @@ Motor motor2 = Motor(BIN1, BIN2, PWMB, offsetB, STBY);
 
 int P, D, I, previousError, PIDvalue, error;
 int lsp, rsp;
-int lfSpeed = 210;
+int lfSpeed = 140;
 int currentSpeed = 100;
 
 float Kp = 0.12;
@@ -54,6 +54,8 @@ void setup() {
   pinMode(12, INPUT_PULLUP);
   pinMode(13, OUTPUT);
   lineThickness = constrain(lineThickness, 10, 35);
+
+  for (int i = 0; i < 7; i++) sensorValue[i] = 0;
 }
 
 void loop() {
@@ -164,8 +166,8 @@ void readLine() {
       sensorValue[i] = (sensorValue[i] + sensorReadings[i][index]) / numValues;
     }
     else {
-      sensorValue[i] = constrain(map(analogRead(i), minValues[i], maxValues[i], 0, 1000), 0, 1000);
-      sensorReadings[i][index] = sensorValue[i];
+      sensorReadings[i][index] = constrain(map(analogRead(i), minValues[i], maxValues[i], 0, 1000), 0, 1000);
+      sensorValue[i] = (sensorValue[i] * index + sensorReadings[i][index]) / (index + 1);
     }
     if (sensorValue[i] > 500) onLine = 1;
   }
