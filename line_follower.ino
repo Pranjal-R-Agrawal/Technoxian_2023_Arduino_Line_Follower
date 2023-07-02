@@ -30,14 +30,15 @@ Motor motor2 = Motor(BIN1, BIN2, PWMB, offsetB, STBY);
 
 int P, D, I, previousError, PIDvalue, error;
 int lsp, rsp;
-int lfSpeed = 140;
-int currentSpeed = 100;
+int lfSpeed = 180;
+int currentSpeed = 140;
 
 float Kp = 0.12;
 float Kd = 1.5;
 float Ki = 0;
 
 int onLine = 1;
+int lineThreshold = 700;
 int numValues = 15;
 int minValues[7], maxValues[7], threshold[7], sensorValue[7], sensorReadings[7][15];
 int index = 0;
@@ -169,7 +170,7 @@ void readLine() {
       sensorReadings[i][index] = constrain(map(analogRead(i), minValues[i], maxValues[i], 0, 1000), 0, 1000);
       sensorValue[i] = (sensorValue[i] * index + sensorReadings[i][index]) / (index + 1);
     }
-    if (sensorValue[i] > 500) onLine = 1;
+    if (sensorValue[i] > lineThreshold) onLine = 1;
   }
   filled = (filled || (index == (numValues - 1))) && takeAverage;
   index = (index + 1) % (numValues - 1);
